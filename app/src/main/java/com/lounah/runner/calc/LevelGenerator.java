@@ -1,10 +1,11 @@
 package com.lounah.runner.calc;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class LevelGenerator {
     private int maxSpikes = 2;
-    private int minFreeSpace = 1;
+    private int minFreeSpace = 2;
     private int levelWidth;
     private int levelHeight;
     private int spikeFreqBorder = 5;
@@ -20,7 +21,7 @@ public class LevelGenerator {
 
     //5 - лучший вариант
     //больше 7 - не очень
-    LevelGenerator(int width, int height) {
+    public LevelGenerator(int width, int height) {
         levelWidth = width;
         levelHeight = height;
         levelMap = new char[height][width];
@@ -53,7 +54,7 @@ public class LevelGenerator {
         maxSpikes = max;
     }
 
-    char[][] initLevel() {
+    public char[][] initLevel() {
         ++score;
         for (int i = 0; i < levelHeight; ++i) {
             levelMap[i][0] = 'e';
@@ -82,7 +83,7 @@ public class LevelGenerator {
 
     private void setTopItem(int line, int row, char eventBefore, boolean event) {
         if (event) {
-            if (eventBefore == 'e' && freeTopSpaceBefore < minFreeSpace) {
+            if (eventBefore == 'e' && freeTopSpaceBefore < minFreeSpace + 1) {
                 ++freeTopSpaceBefore;
                 levelMap[line][row] = 'e';
             }
@@ -101,7 +102,7 @@ public class LevelGenerator {
 
     private void setBottomItem(int line, int row, char eventBefore, boolean event) {
         if (event) {
-            if (eventBefore == 'e' && freeBottomSpaceBefore < minFreeSpace) {
+            if (eventBefore == 'e' && freeBottomSpaceBefore < minFreeSpace + 1) {
                 ++freeBottomSpaceBefore;
                 levelMap[line][row] = 'e';
             }
@@ -136,7 +137,7 @@ public class LevelGenerator {
         }
     }
 
-    void makeNextFameMap() {
+    char[][] makeNextFameMap() {
         ++score;
         for (int i = 0; i < levelHeight; ++i) {
             System.arraycopy(levelMap[i], 1, levelMap[i], 0, levelWidth - 1);
@@ -154,6 +155,8 @@ public class LevelGenerator {
             levelMap[middle][last] = 'l';
             score = 0;
         }
+
+        return levelMap;
     }
 
     private double lambda = 4.0;

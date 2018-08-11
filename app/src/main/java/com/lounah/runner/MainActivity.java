@@ -184,6 +184,7 @@ public class MainActivity extends Activity {
 
     private void onStartNewGame() {
         gameView = new GameView(this, gameLevel);
+        gameView.setBackgroundColor(Color.BLACK);
         final LinearLayout.LayoutParams gameViewLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addContentView(gameView, gameViewLayoutParams);

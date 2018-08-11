@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.lounah.runner.calc.LevelGenerator;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
