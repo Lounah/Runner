@@ -227,5 +227,6 @@ public class StarAnimationView extends View {
         star.alpha = ALPHA_SCALE_PART * star.scale + ALPHA_RANDOM_PART * mRnd.nextFloat();
         star.speed = mBaseSpeed * star.alpha * star.scale;
     }
+
 }
 
