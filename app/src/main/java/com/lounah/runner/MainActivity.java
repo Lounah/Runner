@@ -84,8 +84,8 @@ public class MainActivity extends Activity {
         final LinearLayout.LayoutParams starLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         starAnimView.setLayoutParams(starLayoutParams);
-        starLayoutParams.bottomMargin = (int) convertPixelsToDp(400, this);
-        starLayoutParams.topMargin = (int) convertPixelsToDp(400, this);
+        starLayoutParams.bottomMargin = (int) convertDpToPixel(120, this);
+        starLayoutParams.topMargin = (int) convertDpToPixel(120, this);
         this.addContentView(starAnimView, starAnimView.getLayoutParams());
     }
 

@@ -72,6 +72,8 @@ public class GameView extends View {
     private int cols;
     private int rows;
 
+    private String difficultyLevel;
+
     char[][] level;
 
     static {
@@ -94,8 +96,9 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
     }
 
-    public GameView(Context context) {
+    public GameView(Context context, String difficultyLevel) {
         super(context);
+        this.difficultyLevel = difficultyLevel;
         initialize(context);
     }
 
@@ -138,8 +141,10 @@ public class GameView extends View {
 
         reset();
 
-        LevelGenerator generator = new LevelGenerator(200, rows);
-        level = generator.initLevel();
+        if (difficultyLevel != null) {
+            LevelGenerator generator = new LevelGenerator(200, rows);
+            level = generator.initLevel();
+        }
 
         timer = new Timer();
         timer.scheduleAtFixedRate(createTimerTask(), 0, 16);

@@ -29,11 +29,11 @@ public class StarAnimationView extends View {
     }
 
     private static final int BASE_SPEED_DP_PER_S = 7;
-    private static final int COUNT = 85;
+    private static final int COUNT = 75;
     private static final int SEED = 1337;
     private static final int MAX_SQUARES = 6;
 
-    private static final float SCALE_MIN_PART = 0.45f;
+    private static final float SCALE_MIN_PART = 0.65f;
 
     private static final float SCALE_RANDOM_PART = 0.55f;
 
@@ -52,6 +52,8 @@ public class StarAnimationView extends View {
 
     private Paint paint;
     private int currSquaresCount = 0;
+
+    private boolean increaseState = true;
 
     public StarAnimationView(Context context) {
         super(context);
@@ -107,19 +109,19 @@ public class StarAnimationView extends View {
                 paint.setColor(Color.GRAY);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setAlpha(Math.round(255 * star.alpha));
-                canvas.drawCircle(-size, -size, 13f, paint);
+                canvas.drawCircle(-size, -size, 16f, paint);
             } else if (star.shape == 1) {
                 paint.setAlpha(255);
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.DKGRAY);
                 paint.setStrokeWidth(8);
-                canvas.drawLine(-size-20, -size, -size+20, -size, paint);
-                canvas.drawLine(-size, -size-20, -size, -size+20, paint);
+                canvas.drawLine(-size-30, -size, -size+30, -size, paint);
+                canvas.drawLine(-size, -size-30, -size, -size+30, paint);
             } else if (star.shape == 2){
                 paint.setColor(Color.RED);
                 paint.setStrokeWidth(8);
                 paint.setStyle(Paint.Style.STROKE);
-                canvas.drawRect(-size-10, -size+10, size+10, size-10, paint);
+                canvas.drawRect(-size-20, -size+20, size+20, size-20, paint);
             }
             canvas.restoreToCount(save);
         }
@@ -171,12 +173,12 @@ public class StarAnimationView extends View {
 
             if(star.v == 0)
             {
-                star.v = random.nextInt() % 300 * (random.nextInt()%2 == 0?1:-1);
+                star.v = random.nextInt() % 400 * (random.nextInt()%2 == 0?1:-1);
             }
 
             if(star.h == 0)
             {
-                star.h = random.nextInt() % 300 * (random.nextInt()%2 == 0?1:-1);
+                star.h = random.nextInt() % 400 * (random.nextInt()%2 == 0?1:-1);
             }
 
             int c = 0;
@@ -206,8 +208,11 @@ public class StarAnimationView extends View {
             star.x += star.speed * deltaSeconds * c;
             star.y -= star.speed * deltaSeconds * ch;
 
+            if (star.alpha >= 255) increaseState = false;
 
-            star.alpha--;
+            if (star.alpha == 0) increaseState = true;
+
+            if (increaseState) star.alpha++; else star.alpha--;
 
             final float size = star.scale * mBaseSize;
 
