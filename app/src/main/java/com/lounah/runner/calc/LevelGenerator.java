@@ -26,6 +26,17 @@ public class LevelGenerator {
         levelMap = new char[height][width];
     }
 
+    void setMedium() {
+        maxSpikes = 5;
+        minFreeSpace = 0;
+    }
+
+    void setHard() {
+        maxSpikes = 5;
+        minFreeSpace = 0;
+        starFreqBorder = 5;
+    }
+
     void setSpikeFreqBorder(int border) {
         spikeFreqBorder = border;
     }
@@ -198,4 +209,3 @@ public class LevelGenerator {
 //        }
 //    }
 }
-
