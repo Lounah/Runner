@@ -228,3 +228,4 @@ public class StarAnimationView extends View {
         star.speed = mBaseSpeed * star.alpha * star.scale;
     }
 }
+
