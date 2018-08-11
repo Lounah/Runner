@@ -31,6 +31,7 @@ public class StarAnimationView extends View {
     private static final int BASE_SPEED_DP_PER_S = 7;
     private static final int COUNT = 85;
     private static final int SEED = 1337;
+    private static final int MAX_SQUARES = 6;
 
     private static final float SCALE_MIN_PART = 0.45f;
 
@@ -50,6 +51,7 @@ public class StarAnimationView extends View {
     private long mCurrentPlayTime;
 
     private Paint paint;
+    private int currSquaresCount = 0;
 
     public StarAnimationView(Context context) {
         super(context);
@@ -102,13 +104,22 @@ public class StarAnimationView extends View {
 
             final int size = Math.round(starSize);
             if (star.shape == 0) {
+                paint.setColor(Color.GRAY);
+                paint.setStyle(Paint.Style.FILL);
                 paint.setAlpha(Math.round(255 * star.alpha));
                 canvas.drawCircle(-size, -size, 13f, paint);
-            } else {
+            } else if (star.shape == 1) {
                 paint.setAlpha(255);
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(Color.DKGRAY);
                 paint.setStrokeWidth(8);
                 canvas.drawLine(-size-20, -size, -size+20, -size, paint);
                 canvas.drawLine(-size, -size-20, -size, -size+20, paint);
+            } else if (star.shape == 2){
+                paint.setColor(Color.RED);
+                paint.setStrokeWidth(8);
+                paint.setStyle(Paint.Style.STROKE);
+                canvas.drawRect(-size-10, -size+10, size+10, size-10, paint);
             }
             canvas.restoreToCount(save);
         }
@@ -118,15 +129,12 @@ public class StarAnimationView extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mTimeAnimator = new TimeAnimator();
-        mTimeAnimator.setTimeListener(new TimeAnimator.TimeListener() {
-            @Override
-            public void onTimeUpdate(TimeAnimator animation, long totalTime, long deltaTime) {
-                if (!isLaidOut()) {
-                    return;
-                }
-                updateState(deltaTime);
-                invalidate();
+        mTimeAnimator.setTimeListener((animation, totalTime, deltaTime) -> {
+            if (!isLaidOut()) {
+                return;
             }
+            updateState(deltaTime);
+            invalidate();
         });
         mTimeAnimator.start();
     }
@@ -199,6 +207,8 @@ public class StarAnimationView extends View {
             star.y -= star.speed * deltaSeconds * ch;
 
 
+            star.alpha--;
+
             final float size = star.scale * mBaseSize;
 
             if (star.y + size < 0) {
@@ -214,7 +224,10 @@ public class StarAnimationView extends View {
         star.scale = SCALE_MIN_PART + SCALE_RANDOM_PART * mRnd.nextFloat();
 
         star.x = viewWidth * mRnd.nextFloat();
-        star.shape = random.nextInt(2);
+        int shape = random.nextInt(4);
+        if (shape == 3) currSquaresCount++;
+        if (currSquaresCount >= MAX_SQUARES) shape = random.nextInt(2);
+        star.shape = shape;
         star.v = 0;
         star.h = 0;
         star.sz = 0;

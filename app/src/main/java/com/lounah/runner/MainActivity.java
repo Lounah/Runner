@@ -84,6 +84,8 @@ public class MainActivity extends Activity {
         final LinearLayout.LayoutParams starLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         starAnimView.setLayoutParams(starLayoutParams);
+        starLayoutParams.bottomMargin = (int) convertPixelsToDp(400, this);
+        starLayoutParams.topMargin = (int) convertPixelsToDp(400, this);
         this.addContentView(starAnimView, starAnimView.getLayoutParams());
     }
 
@@ -182,7 +184,10 @@ public class MainActivity extends Activity {
 
     private void onStartNewGame() {
         gameView = new GameView(this);
-        this.setContentView(gameView);
+        final LinearLayout.LayoutParams gameViewLayoutParams
+                = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        this.addContentView(gameView, gameViewLayoutParams);
+        setUpStarAnimationView();
     }
 
     private static float convertDpToPixel(float dp, Context context) {
