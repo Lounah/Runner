@@ -1,15 +1,15 @@
 package com.lounah.runner.calc;
 
+import java.util.Random;
+
 public class LevelGenerator {
     private int maxSpikes = 2;
     private int minFreeSpace = 1;
     private int levelWidth;
     private int levelHeight;
-    private int spikeFreq = 5;
+    private int spikeFreqBorder = 5;
+    private int starFreqBorder = 7;
     private char[][] levelMap;
-
-    private int spikesBefore = 0;
-    private int freeSpaceBefore = 0;
 
     private int freeTopSpaceBefore = 0;
     private int topSpikesBefore = 0;
@@ -24,8 +24,12 @@ public class LevelGenerator {
         levelMap = new char[height][width];
     }
 
-    void setFreq(int freq) {
-        spikeFreq = freq;
+    void setSpikeFreqBorder(int border) {
+        spikeFreqBorder = border;
+    }
+
+    void setStarFreqBorder(int border) {
+        starFreqBorder = border;
     }
 
     void setMinFreeSpace(int min) {
@@ -46,11 +50,12 @@ public class LevelGenerator {
         }
 
         for (int i = 10; i < levelWidth; ++i) {
-            setBottomItem(levelHeight - 1, i, levelMap[levelHeight - 1][i - 1], getPoisson(spikeFreq));
+            setBottomItem(levelHeight - 1, i,
+                    levelMap[levelHeight - 1][i - 1], getPoisson(spikeFreqBorder));
         }
 
         for (int i = 1; i < levelWidth; ++i) {
-            setTopItem(0, i, levelMap[0][i - 1], getPoisson(spikeFreq));
+            setTopItem(0, i, levelMap[0][i - 1], getPoisson(spikeFreqBorder));
         }
         //genMiddle
         for (int level = 1; level < levelHeight - 1; ++level) {
@@ -61,7 +66,7 @@ public class LevelGenerator {
         return levelMap;
     }
 
-    void setTopItem(int line, int row, char eventBefore, boolean event) {
+    private void setTopItem(int line, int row, char eventBefore, boolean event) {
         if (event) {
             if (eventBefore == 'e' && freeTopSpaceBefore < minFreeSpace) {
                 ++freeTopSpaceBefore;
@@ -80,7 +85,7 @@ public class LevelGenerator {
         }
     }
 
-    void setBottomItem(int line, int row, char eventBefore, boolean event) {
+    private void setBottomItem(int line, int row, char eventBefore, boolean event) {
         if (event) {
             if (eventBefore == 'e' && freeBottomSpaceBefore < minFreeSpace) {
                 ++freeBottomSpaceBefore;
@@ -99,21 +104,39 @@ public class LevelGenerator {
         }
     }
 
+    private Random random = new Random();
+
+    private void setMiddleItem(int row) {
+        for (int i = 1; i < levelHeight - 2; ++i) {
+            levelMap[i][row] = 'e';
+        }
+
+        boolean poisson = getPoisson(starFreqBorder);
+        if (poisson) {
+            int line = 1;
+            int position = levelHeight - 3 + 1;
+            if (position > 1) {
+                line = random.nextInt(position);
+            }
+            levelMap[line][row] = 's';
+        }
+    }
+
     void makeNextFameMap() {
         for (int i = 0; i < levelHeight; ++i) {
             System.arraycopy(levelMap[i], 1, levelMap[i], 0, levelWidth - 1);
         }
 
         setBottomItem(levelHeight - 1, levelWidth - 1,
-                levelMap[levelHeight - 1][levelWidth - 1], getPoisson(spikeFreq));
-        setTopItem(0, levelWidth - 1, levelMap[0][levelWidth - 1], getPoisson(spikeFreq));
-        //gen middle
-        for (int i = 1; i < levelHeight - 1; ++i) {
-            levelMap[i][levelWidth - 1] = 'e';
-        }
+                levelMap[levelHeight - 1][levelWidth - 1], getPoisson(spikeFreqBorder));
+        setTopItem(0, levelWidth - 1, levelMap[0][levelWidth - 1], getPoisson(spikeFreqBorder));
+
+        setMiddleItem(levelWidth - 1);
     }
 
-    private boolean getPoisson(double lambda) {
+    private double lambda = 4.0;
+
+    private boolean getPoisson(int border) {
         double L = Math.exp(-lambda);
         double p = 1.0;
         int k = 0;
@@ -123,8 +146,9 @@ public class LevelGenerator {
             p *= Math.random();
         } while (p > L);
 
-        return (k - 1) > 5;
+        return (k - 1) > border;
     }
+
     public static int getBinomial(int n, double p) {
         int x = 0;
         for (int i = 0; i < n; i++) {
@@ -133,6 +157,9 @@ public class LevelGenerator {
         }
         return x;
     }
+
+//    private int spikesBefore = 0;
+//    private int freeSpaceBefore = 0;
 
 //    char getItem(char eventBefore, char event, int freeSpaceBefore, int spikesBefore) {
 //        if (eventBefore == 'e' && freeTopSpaceBefore < minFreeSpace) {
@@ -160,4 +187,3 @@ public class LevelGenerator {
 //        }
 //    }
 }
-
