@@ -16,6 +16,8 @@ public class LevelGenerator {
     private int freeBottomSpaceBefore = 0;
     private int bottomSpikesBefore = 0;
 
+    private int score = 0;
+
     //5 - лучший вариант
     //больше 7 - не очень
     LevelGenerator(int width, int height) {
@@ -41,6 +43,7 @@ public class LevelGenerator {
     }
 
     char[][] initLevel() {
+        ++score;
         for (int i = 0; i < levelHeight; ++i) {
             levelMap[i][0] = 'e';
         }
@@ -123,15 +126,23 @@ public class LevelGenerator {
     }
 
     void makeNextFameMap() {
+        ++score;
         for (int i = 0; i < levelHeight; ++i) {
             System.arraycopy(levelMap[i], 1, levelMap[i], 0, levelWidth - 1);
         }
 
-        setBottomItem(levelHeight - 1, levelWidth - 1,
-                levelMap[levelHeight - 1][levelWidth - 1], getPoisson(spikeFreqBorder));
-        setTopItem(0, levelWidth - 1, levelMap[0][levelWidth - 1], getPoisson(spikeFreqBorder));
+        int last = levelWidth - 1;
+        setBottomItem(levelHeight - 1, last,
+                levelMap[levelHeight - 1][last], getPoisson(spikeFreqBorder));
+        setTopItem(0, levelWidth - 1, levelMap[0][last], getPoisson(spikeFreqBorder));
 
-        setMiddleItem(levelWidth - 1);
+        setMiddleItem(last);
+
+        if (score % 1000 == 0) {
+            int middle = levelHeight / 2;
+            levelMap[middle][last] = 'l';
+            score = 0;
+        }
     }
 
     private double lambda = 4.0;
@@ -187,3 +198,4 @@ public class LevelGenerator {
 //        }
 //    }
 }
+
