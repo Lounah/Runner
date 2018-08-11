@@ -12,7 +12,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -21,7 +20,7 @@ import java.util.TimerTask;
 
 public class GameView extends View {
 
-    private static final float CELL_SIZE = 87.0f;
+    private static final float CELL_SIZE = 97.0f;
     private static final float HERO_SIZE = 24.0f;
     private static final float X = 56.0f;
 
@@ -93,7 +92,8 @@ public class GameView extends View {
 
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.YELLOW);
+//        textPaint.setColor(Color.rgb(255, 64, 129));
+        textPaint.setColor(Color.WHITE);
         textPaint.setFakeBoldText(true);
 
         starPaint = new Paint();
@@ -140,8 +140,8 @@ public class GameView extends View {
 
         textPaint.setTextSize(18.0f * displayMetrics.scaledDensity);
         starPaint.setStrokeWidth(3.0f * density);
-        cellPaint.setStrokeWidth(3.0f * density);
-        floorPaint.setStrokeWidth(3.0f * density);
+        cellPaint.setStrokeWidth(4.0f * density);
+        floorPaint.setStrokeWidth(4.0f * density);
     }
 
     private LevelGenerator generator;
@@ -196,7 +196,6 @@ public class GameView extends View {
 
         maxSpeed = (float) (Math.sqrt(getHeight())) * 1.5f;
         delta = (float) Math.sqrt(9.8f);
-        Log.d(TAG, "maxSpeed: " + maxSpeed);
 
         maxY = screen.y - heroSize - floorHeight;
     }
@@ -261,7 +260,7 @@ public class GameView extends View {
         int i = (int) (cy / cellSize);
         int j = (int) ((x + dx) / cellSize);
         if (level != null && level[i][j] != 'e') {
-            ballPaint.setColor(Color.RED);
+            ballPaint.setColor(Color.rgb(255, 64, 129));
             stop();
         }
     }
