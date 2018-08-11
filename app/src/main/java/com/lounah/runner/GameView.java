@@ -16,18 +16,17 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.lounah.runner.views.StarAnimationView;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameView extends View {
 
-    private static final float CELL_SIZE = 48.0f;
-    private static final float HERO_SIZE = 16.0f;
+    private static final float CELL_SIZE = 112.0f;
+    private static final float HERO_SIZE = 24.0f;
     private static final float X = 56.0f;
 
     private static final String TAG = GameView.class.getSimpleName();
+    public static final float SPEED = 5.0f;
 
     private Timer timer;
 
@@ -60,8 +59,8 @@ public class GameView extends View {
     private static final Paint floorPaint;
 
     private static final Paint cellPaint;
-
     private static final Paint textPaint;
+    private static final Paint starPaint;
 
     private float speed = 0.0f;
 
@@ -79,21 +78,28 @@ public class GameView extends View {
     static {
         ballPaint = new Paint();
         ballPaint.setAntiAlias(true);
-        ballPaint.setColor(Color.WHITE);
+        ballPaint.setColor(Color.GRAY);
+        ballPaint.setStyle(Paint.Style.FILL);
 
         floorPaint = new Paint();
         floorPaint.setAntiAlias(true);
-        floorPaint.setColor(Color.GRAY);
+        floorPaint.setColor(Color.DKGRAY);
+        floorPaint.setStyle(Paint.Style.STROKE);
 
         cellPaint = new Paint();
         cellPaint.setAntiAlias(true);
         cellPaint.setColor(Color.DKGRAY);
-        cellPaint.setStyle(Paint.Style.FILL);
+        cellPaint.setStyle(Paint.Style.STROKE);
 
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setColor(Color.YELLOW);
         textPaint.setFakeBoldText(true);
+
+        starPaint = new Paint();
+        starPaint.setAntiAlias(true);
+        starPaint.setColor(Color.DKGRAY);
+        starPaint.setStyle(Paint.Style.STROKE);
     }
 
     public GameView(Context context, String difficultyLevel) {
@@ -119,7 +125,7 @@ public class GameView extends View {
     }
 
     private void initialize(Context context) {
-        setBackgroundColor(Color.BLACK);
+        setBackgroundColor(Color.TRANSPARENT);
 
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         final float density = displayMetrics.density;
@@ -130,9 +136,12 @@ public class GameView extends View {
         x = X * density;
         y = 0.0f;
         minY = 0.0f;
-        deltaX = 1.5f * density;
+        deltaX = SPEED * density;
 
         textPaint.setTextSize(18.0f * displayMetrics.scaledDensity);
+        starPaint.setStrokeWidth(3.0f * density);
+        cellPaint.setStrokeWidth(3.0f * density);
+        floorPaint.setStrokeWidth(3.0f * density);
     }
 
     public void start() {
@@ -163,7 +172,7 @@ public class GameView extends View {
         screen.x = getWidth();
         screen.y = getHeight();
 
-        cols = (int) (getWidth() / cellSize) + 1; // offscreen
+        cols = (int) (getWidth() / cellSize) + 2; // offscreen
         rows = (int) (getHeight() / cellSize); // floorHeight != 0.0f
 
         floorHeight = screen.y - rows * cellSize;
@@ -192,7 +201,7 @@ public class GameView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawRect(floor, floorPaint);
+        canvas.drawLine(floor.left, floor.top, floor.right, floor.top, floorPaint);
 
         if (level != null) {
             for (int i = 0; i < rows; i++) {
@@ -208,6 +217,9 @@ public class GameView extends View {
                         case 'b':
                             drawUpPointingTriangle(canvas, left, top, right, bottom);
                             break;
+                        case 's':
+                            drawStar(canvas, left, top, right, bottom);
+                            break;
                     }
                 }
             }
@@ -217,7 +229,7 @@ public class GameView extends View {
 
         canvas.drawCircle(x - heroSize / 2.0f, cy, heroSize / 2.0f, ballPaint);
 
-        canvas.drawText("SCORE: " + dj * 10, heroSize, heroSize, textPaint);
+        canvas.drawText("SCORE: " + dj * 10, heroSize / 4.0f, heroSize, textPaint);
 
 
         if (speed > 0.0f) {
@@ -264,6 +276,25 @@ public class GameView extends View {
         path.lineTo(right, bottom);
         path.close();
         canvas.drawPath(path, cellPaint);
+    }
+
+    private static void drawStar(Canvas canvas, float left, float top, float right, float bottom) {
+        float halfSize = (right - left) / 2.0f;
+        float delta = (halfSize * 0.25f);
+        final Path path = new Path();
+        path.moveTo(left + halfSize, top);
+        path.lineTo(left + halfSize, bottom);
+
+        path.moveTo(left, top + halfSize);
+        path.lineTo(right, top + halfSize);
+
+        path.moveTo(left + delta, top + delta);
+        path.lineTo(right - delta, bottom - delta);
+
+        path.moveTo(right - delta, top + delta);
+        path.lineTo(left + delta, bottom - delta);
+
+        canvas.drawPath(path, starPaint);
     }
 
     @SuppressLint("ClickableViewAccessibility")
