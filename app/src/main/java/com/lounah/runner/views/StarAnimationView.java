@@ -205,8 +205,8 @@ public class StarAnimationView extends View {
                 ch=-1;
             }
 
-            star.x += star.speed * deltaSeconds * c;
-            star.y -= star.speed * deltaSeconds * ch;
+//            star.x += star.speed * deltaSeconds * c;
+//            star.y -= star.speed * deltaSeconds * ch;
 
             if (star.alpha >= 255) increaseState = false;
 

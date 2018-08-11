@@ -16,14 +16,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.lounah.runner.calc.LevelGenerator;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameView extends View {
 
-    private static final float CELL_SIZE = 112.0f;
+    private static final float CELL_SIZE = 87.0f;
     private static final float HERO_SIZE = 24.0f;
     private static final float X = 56.0f;
 
@@ -73,6 +71,7 @@ public class GameView extends View {
     private int cols;
     private int rows;
 
+    private int levelWidth = 1000;
     private String difficultyLevel;
 
     char[][] level;
@@ -146,15 +145,22 @@ public class GameView extends View {
         floorPaint.setStrokeWidth(3.0f * density);
     }
 
+    LevelGenerator generator;
+
     public void start() {
         stop();
         setKeepScreenOn(true);
 
         reset();
 
+        generator = new LevelGenerator(200, rows);
+        level = generator.initLevel();
+
         if (difficultyLevel != null) {
-            LevelGenerator generator = new LevelGenerator(200, rows);
-            level = generator.initLevel();
+            switch (difficultyLevel) {
+                case MainActivity.GAME_LEVEL_MEDIUM:
+                    generator.setMedium();
+            }
         }
 
         timer = new Timer();
@@ -244,7 +250,7 @@ public class GameView extends View {
         dx += deltaX;
         if (dx > cellSize) {
             dx = dx - cellSize;
-            if (dj < 200 - cols) {
+            if (dj < levelWidth - cols) {
                 dj++;
             } else {
                 stop(); // TODO
@@ -303,9 +309,8 @@ public class GameView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (timer != null) {
-                speed = maxSpeed;
-            } else {
+            speed = maxSpeed;
+            if (timer == null) {
                 start();
             }
         }

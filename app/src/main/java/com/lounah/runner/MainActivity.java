@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
     private static final String PREFS_DEFAULT = "DEFAULT_PREFS";
     private static final String START_NEW_GAME = "Начать";
 
-    private static final String GAME_LEVEL_EASY = "EASY";
-    private static final String GAME_LEVEL_MEDIUM = "MEDIUM";
-    private static final String GAME_LEVEL_HARD = "HARD";
+    public static final String GAME_LEVEL_EASY = "EASY";
+    public static final String GAME_LEVEL_MEDIUM = "MEDIUM";
+    public static final String GAME_LEVEL_HARD = "HARD";
 
     private int BASE_MARGIN;
 

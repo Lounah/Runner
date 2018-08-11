@@ -1,4 +1,4 @@
-package com.lounah.runner.calc;
+package com.lounah.runner;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,7 +21,7 @@ public class LevelGenerator {
 
     //5 - лучший вариант
     //больше 7 - не очень
-    public LevelGenerator(int width, int height) {
+    LevelGenerator(int width, int height) {
         levelWidth = width;
         levelHeight = height;
         levelMap = new char[height][width];
@@ -54,7 +54,7 @@ public class LevelGenerator {
         maxSpikes = max;
     }
 
-    public char[][] initLevel() {
+    char[][] initLevel() {
         ++score;
         for (int i = 0; i < levelHeight; ++i) {
             levelMap[i][0] = 'e';
