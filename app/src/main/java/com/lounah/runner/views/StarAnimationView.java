@@ -5,12 +5,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.lounah.runner.R;
 
 import java.util.Random;
 
@@ -197,9 +194,9 @@ public class StarAnimationView extends View {
                 star.h--;
                 ch=-1;
             }
-//
-//            star.x += star.speed * deltaSeconds * c;
-//            star.y -= star.speed * deltaSeconds * ch;
+
+            star.x += star.speed * deltaSeconds * c;
+            star.y -= star.speed * deltaSeconds * ch;
 
 
             final float size = star.scale * mBaseSize;

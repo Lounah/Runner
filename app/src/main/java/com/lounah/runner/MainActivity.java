@@ -53,6 +53,7 @@ public class MainActivity extends Activity {
     private TimerTask timerTask;
     private View[] stars;
 
+    private GameView gameView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,21 +65,12 @@ public class MainActivity extends Activity {
         setUpStarAnimationView();
         setUpSettings();
         setUpBaseViews();
-       // drawStars();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         starAnimView.resume();
-//        timer = new Timer();
-//        timerTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                invalidateStars();
-//            }
-//        };
-//        timer.scheduleAtFixedRate(timerTask, 0, (int) FPS);
     }
 
     @Override
@@ -154,7 +146,7 @@ public class MainActivity extends Activity {
     private void initializeTitle() {
         tvTitle = new TextView(this);
 
-        tvTitle.setText(getResources().getString(R.string.app_name));
+        tvTitle.setText("RUNNER");
         tvTitle.setGravity(Gravity.TOP);
         tvTitle.setTextColor(getResources().getColor(android.R.color.white));
         tvTitle.setAllCaps(true);
@@ -189,7 +181,8 @@ public class MainActivity extends Activity {
     }
 
     private void onStartNewGame() {
-
+        gameView = new GameView(this);
+        this.setContentView(gameView);
     }
 
     private static float convertDpToPixel(float dp, Context context) {
@@ -226,12 +219,4 @@ public class MainActivity extends Activity {
         }
         return stars;
     }
-
-    private void drawStars() {
-        for (byte i = 0; i < STARS_ON_FRAME; i++) {
-            this.addContentView(stars[i], stars[i].getLayoutParams());
-        }
-    }
-
-
 }
