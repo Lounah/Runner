@@ -71,7 +71,6 @@ public class GameView extends View {
     private int cols;
     private int rows;
 
-    private int levelWidth = 1000;
     private String difficultyLevel;
 
     char[][] level;
@@ -99,7 +98,7 @@ public class GameView extends View {
 
         starPaint = new Paint();
         starPaint.setAntiAlias(true);
-        starPaint.setColor(Color.DKGRAY);
+        starPaint.setColor(Color.LTGRAY);
         starPaint.setStyle(Paint.Style.STROKE);
     }
 
@@ -145,7 +144,7 @@ public class GameView extends View {
         floorPaint.setStrokeWidth(3.0f * density);
     }
 
-    LevelGenerator generator;
+    private LevelGenerator generator;
 
     public void start() {
         stop();
@@ -153,13 +152,18 @@ public class GameView extends View {
 
         reset();
 
-        generator = new LevelGenerator(200, rows);
+        generator = new LevelGenerator(Math.max(25, cols), rows);
         level = generator.initLevel();
 
         if (difficultyLevel != null) {
             switch (difficultyLevel) {
                 case MainActivity.GAME_LEVEL_MEDIUM:
                     generator.setMedium();
+                    break;
+                case MainActivity.GAME_LEVEL_HARD:
+                    generator.setHard();
+                    ;
+                    break;
             }
         }
 
@@ -218,7 +222,7 @@ public class GameView extends View {
                     float top = i * cellSize;
                     float right = left + cellSize;
                     float bottom = top + cellSize;
-                    switch (level[i][j + dj]) {
+                    switch (level[i][j]) {
                         case 't':
                             drawDownPointingTriangle(canvas, left, top, right, bottom);
                             break;
@@ -249,16 +253,13 @@ public class GameView extends View {
         }
         dx += deltaX;
         if (dx > cellSize) {
-            dx = dx - cellSize;
-            if (dj < levelWidth - cols) {
-                dj++;
-            } else {
-                stop(); // TODO
-            }
+            dx -= cellSize;
+            dj++;
+            level = generator.makeNextFameMap();
         }
 
         int i = (int) (cy / cellSize);
-        int j = (int) ((x + dx) / cellSize) + dj;
+        int j = (int) ((x + dx) / cellSize);
         if (level != null && level[i][j] != 'e') {
             ballPaint.setColor(Color.RED);
             stop();

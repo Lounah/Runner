@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
 
         BASE_MARGIN = (int) convertDpToPixel(16, this);
         BASE_TEXT_SIZE = spToPx(22, this);
-        setUpStarAnimationView();
+        setUpStarAnimationView(true);
         setUpSettings();
         setUpBaseViews();
     }
@@ -79,13 +79,17 @@ public class MainActivity extends Activity {
         starAnimView.pause();
     }
 
-    private void setUpStarAnimationView() {
+    private void setUpStarAnimationView(boolean needMargin) {
         starAnimView = new StarAnimationView(this);
         final LinearLayout.LayoutParams starLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         starAnimView.setLayoutParams(starLayoutParams);
-        starLayoutParams.bottomMargin = (int) convertDpToPixel(120, this);
-        starLayoutParams.topMargin = (int) convertDpToPixel(120, this);
+        if (needMargin) {
+            starLayoutParams.bottomMargin = (int) convertDpToPixel(120, this);
+            starLayoutParams.topMargin = (int) convertDpToPixel(120, this);
+        } else {
+            starAnimView.setBackgroundColor(Color.BLACK);
+        }
         this.addContentView(starAnimView, starAnimView.getLayoutParams());
     }
 
@@ -183,12 +187,12 @@ public class MainActivity extends Activity {
     }
 
     private void onStartNewGame() {
+        setUpStarAnimationView(false);
         gameView = new GameView(this, gameLevel);
-        gameView.setBackgroundColor(Color.BLACK);
+        gameView.setBackgroundColor(Color.TRANSPARENT);
         final LinearLayout.LayoutParams gameViewLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addContentView(gameView, gameViewLayoutParams);
-        setUpStarAnimationView();
     }
 
     private static float convertDpToPixel(float dp, Context context) {
