@@ -24,6 +24,7 @@ public class StarAnimationView extends View {
         private int v;
         private int h;
         private int sz;
+        private int shape;
 
         private float scale;
         private float alpha;
@@ -88,7 +89,6 @@ public class StarAnimationView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         final int viewHeight = getHeight();
-        final int shape = random.nextInt(2);
         for (final Star star : mStars) {
 
             final float starSize = star.scale * mBaseSize;
@@ -104,7 +104,7 @@ public class StarAnimationView extends View {
             canvas.rotate(360 * progress);
 
             final int size = Math.round(starSize);
-            if (shape == 0) {
+            if (star.shape == 0) {
                 paint.setAlpha(Math.round(255 * star.alpha));
                 canvas.drawCircle(-size, -size, 13f, paint);
             } else {
@@ -197,9 +197,9 @@ public class StarAnimationView extends View {
                 star.h--;
                 ch=-1;
             }
-
-            star.x += star.speed * deltaSeconds * c;
-            star.y -= star.speed * deltaSeconds * ch;
+//
+//            star.x += star.speed * deltaSeconds * c;
+//            star.y -= star.speed * deltaSeconds * ch;
 
 
             final float size = star.scale * mBaseSize;
@@ -217,7 +217,7 @@ public class StarAnimationView extends View {
         star.scale = SCALE_MIN_PART + SCALE_RANDOM_PART * mRnd.nextFloat();
 
         star.x = viewWidth * mRnd.nextFloat();
-
+        star.shape = random.nextInt(2);
         star.v = 0;
         star.h = 0;
         star.sz = 0;
