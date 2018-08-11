@@ -3,20 +3,33 @@ package com.lounah.runner;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.lounah.runner.views.Star;
+import com.lounah.runner.views.StarAnimationView;
+
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends Activity {
 
     private Button btnStartGame;
     private Button btnSelectLevel;
     private TextView tvTitle;
+    private StarAnimationView starAnimView;
 
     private String gameLevel;
 
@@ -32,15 +45,55 @@ public class MainActivity extends Activity {
 
     private float BASE_TEXT_SIZE;
 
+    private static final float FPS = 1000 / 60;
+    private static final int STARS_ON_FRAME = 60;
+    private static final Executor executor = Executors.newSingleThreadExecutor();
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private View[] stars;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        stars = generateStars();
         super.onCreate(savedInstanceState);
+
         BASE_MARGIN = (int) convertDpToPixel(16, this);
         BASE_TEXT_SIZE = spToPx(22, this);
+        setUpStarAnimationView();
         setUpSettings();
         setUpBaseViews();
+       // drawStars();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        starAnimView.resume();
+//        timer = new Timer();
+//        timerTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                invalidateStars();
+//            }
+//        };
+//        timer.scheduleAtFixedRate(timerTask, 0, (int) FPS);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        starAnimView.pause();
+    }
+
+    private void setUpStarAnimationView() {
+        starAnimView = new StarAnimationView(this);
+        final LinearLayout.LayoutParams starLayoutParams
+                = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        starAnimView.setLayoutParams(starLayoutParams);
+        this.addContentView(starAnimView, starAnimView.getLayoutParams());
+    }
 
     private void setUpSettings() {
         gameLevel = getSharedPreferences(PREFS_DEFAULT, Context.MODE_PRIVATE)
@@ -134,9 +187,9 @@ public class MainActivity extends Activity {
 
         btnSelectLevel.setText(gameLevel);
     }
-    
+
     private void onStartNewGame() {
-        //this.setContentView();
+
     }
 
     private static float convertDpToPixel(float dp, Context context) {
@@ -156,4 +209,28 @@ public class MainActivity extends Activity {
     private static int spToPx(float sp, Context context) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, context.getResources().getDisplayMetrics());
     }
+
+    private View[] generateStars() {
+        final Random random = new Random();
+        View[] stars = new View[STARS_ON_FRAME];
+        AlphaAnimation animation = new AlphaAnimation(1f, 0f);
+        animation.setDuration(300);
+        final LinearLayout.LayoutParams starLayoutParams
+                = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        for (byte i = 0; i < STARS_ON_FRAME; i++) {
+            final Star star = new Star(this, random.nextInt(900)+BASE_MARGIN, random.nextInt(getResources().getDisplayMetrics().heightPixels - BASE_MARGIN*6), random.nextInt(2), Color.GRAY);
+            star.setLayoutParams(starLayoutParams);
+            star.setAnimation(animation);
+            stars[i] = star;
+        }
+        return stars;
+    }
+
+    private void drawStars() {
+        for (byte i = 0; i < STARS_ON_FRAME; i++) {
+            this.addContentView(stars[i], stars[i].getLayoutParams());
+        }
+    }
+
 }
