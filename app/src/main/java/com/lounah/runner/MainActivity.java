@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
 
     private void setUpStarAnimationView() {
         starAnimView = new StarAnimationView(this);
+        starAnimView.setBackgroundColor(Color.BLACK);
         final LinearLayout.LayoutParams starLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         starAnimView.setLayoutParams(starLayoutParams);
@@ -183,11 +184,12 @@ public class MainActivity extends Activity {
     }
 
     private void onStartNewGame() {
+
+        setUpStarAnimationView();
         gameView = new GameView(this);
         final LinearLayout.LayoutParams gameViewLayoutParams
                 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         this.addContentView(gameView, gameViewLayoutParams);
-        setUpStarAnimationView();
     }
 
     private static float convertDpToPixel(float dp, Context context) {
